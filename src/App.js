@@ -87,7 +87,7 @@ export default function ContactPage() {
             <div className="footer-column">
               <ul>              
                 <li>Reach us</li>
-                <li>+012 3456 789</li>
+                <li><img src={require('./bxs_phone-call.png')} />+012 3456 789</li>
                 <li>demo@gmail.com</li>
                 <li>132 Dartmouth Street Boston,<br /> Massachusetts 02156 United States</li>
               </ul>
