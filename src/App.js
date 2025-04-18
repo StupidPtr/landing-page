@@ -13,6 +13,8 @@ export default function ContactPage() {
           <a href="#">Blog</a>
           <a href="#">Shop</a>
           <a href="#" className="active">Contact</a>
+          <a href="#"><img src={require('./Mask_group.png')}/></a>
+          <a href="#"><img src={require('./bi_cart.png')}/></a>
         </nav>
       </header>
 
@@ -20,23 +22,39 @@ export default function ContactPage() {
       <section className="contact-section">
         <div className="contact-title">
           <h2>Contact Us</h2>
-          <p>Any question or remark? Just write us a message!</p>
+          <p className="sub-text">Any question or remark? Just write us a message!</p>
         </div>
         <div className="contact-container">
           {/* Left Panel */}
           <div className="contact-info">
-            <h3>Contact Information</h3>
-            <p>Say something to start a live chat!</p>
+            <div>
+              <h3>Contact Information</h3>
+              <h4>Say something to start a live chat!</h4>
+            </div>
             <div className="info-details">
-              <p><strong>Phone:</strong> +012 3456 789</p>
-              <p><strong>Email:</strong> demo@gmail.com</p>
-              <p><strong>Address:</strong><br />132 Dartmouth Street Boston,<br />Massachusetts 02156 United States</p>
+              <p><img src={require('./bxs_phone-call.png')} /> +012 3456 789</p>
+              <p><img src={require('./ic_sharp-email.png')}/> demo@gmail.com</p>
+              <p className="adress-line">
+                <img src={require('./carbon_location-filled.png')}/>
+                <span>
+                    132 Dartmouth Street Boston,<br /> 
+                    Massachusetts 02156 United States
+                </span>
+              </p>
             </div>
             <div className="social-icons">
-              <button className="icon">A</button>
-              <button className="icon">B</button>
-              <button className="icon">C</button>
+              <div className="ellipse-container">
+                <a href="#"><img src={require('./twit.png')} className="ellipse-icon" /></a>
+              </div>
+              <div className="ellipse-container">
+                <a href="#"><img src={require('./inst.png')} className="ellipse-icon" /></a>
+              </div>
+              <div className="ellipse-container">
+              <a href="#"><img src={require('./dis.png')} className="ellipse-icon" /></a>
+              </div>
             </div>
+            <div className="decor-circle circle-1"></div>
+            <div className="decor-circle circle-2"></div>
           </div>
 
           {/* Right Form */}
@@ -75,6 +93,7 @@ export default function ContactPage() {
               <textarea rows="4" placeholder="Write your message..."></textarea>
             </div>
             <button type="submit" className="submit-button">Send Message</button>
+            <img className="paper" src={require('./letter_send.png')}/>
           </form>
         </div>
       </section>
@@ -88,8 +107,14 @@ export default function ContactPage() {
               <ul>              
                 <li>Reach us</li>
                 <li><img src={require('./bxs_phone-call.png')} />+012 3456 789</li>
-                <li>demo@gmail.com</li>
-                <li>132 Dartmouth Street Boston,<br /> Massachusetts 02156 United States</li>
+                <li><img src={require('./ic_sharp-email.png')}/>demo@gmail.com</li>
+                <li className="adress-line">
+                  <img src={require('./carbon_location-filled.png')}/>
+                  <span>
+                    132 Dartmouth Street Boston,<br /> 
+                    Massachusetts 02156 United States
+                  </span>
+                </li>
               </ul>
             </div>
           </div>
