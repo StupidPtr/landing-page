@@ -1,7 +1,39 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 
 export default function ContactPage() {
+
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type} = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubjectChange = (e) => {
+    setFormData({
+      ...formData,
+      subject: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { firstName, lastName, email, phone, subject, message } = formData;
+
+    alert(`Message Sent!\n\nName: ${firstName}\nLast Name: ${lastName}\nEmail: ${email}\nPhone: ${phone}\nSubject: ${subject}\nMessage: ${message}`);
+  }
+
   return (
     <div className="contact-page">
       {/* Header */}
@@ -58,39 +90,93 @@ export default function ContactPage() {
           </div>
 
           {/* Right Form */}
-          <form className="contact-form">
+          <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-row">
               <div className="form-group">
                 <label>First Name</label>
-                <input type="text" placeholder="Enter your first name" />
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange} 
+                  placeholder="Enter your first name"
+                  />
               </div>
               <div className="form-group">
                 <label>Last Name</label>
-                <input type="text" placeholder="Enter your last name" />
+                <input
+                   type="text"
+                   name="lastName"
+                   value={formData.lastName}
+                   onChange={handleChange}
+                   placeholder="Enter your last name" 
+                   />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Email</label>
-                <input type="email" placeholder="Enter your email" />
+                <input 
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email" 
+                />
               </div>
               <div className="form-group">
                 <label>Phone Number</label>
-                <input type="text" placeholder="Enter your phone number" />
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Enter your phone number" 
+                  />
               </div>
             </div>
             <div className="form-radio-group">
               <label className="label-select">Select Subject?</label>
               <div className="radio-options">
-                <label><input type="radio" name="subject" /> General Inquiry</label>
-                <label><input type="radio" name="subject" /> General Inquiry</label>
-                <label><input type="radio" name="subject" /> General Inquiry</label>
-                <label><input type="radio" name="subject" /> General Inquiry</label>
+                <label><input
+                  type="radio" 
+                  name="subject" 
+                  value="General Inquiry"
+                  checked={formData.subject === 'General Inquiry'}
+                  onChange={handleSubjectChange}
+                  /> General Inquiry</label>
+                <label><input 
+                  type="radio" 
+                  name="subject"
+                  value="Support"
+                  checked={formData.subject === 'Support'}
+                  onChange={handleSubjectChange}
+                  /> Support</label>
+                <label><input 
+                  type="radio" 
+                  name="subject"
+                  value="Feedback"
+                  checked={formData.subject === 'Feedback'}
+                  onChange={handleSubjectChange}
+                  /> Feedback</label>
+                <label><input 
+                  type="radio" 
+                  name="subject" 
+                  value="Other"
+                  checked={formData.subject === 'Other'}
+                  onChange={handleSubjectChange}
+                  /> Other</label>
               </div>
             </div>
             <div className="form-group">
               <label>Message</label>
-              <textarea rows="4" placeholder="Write your message..."></textarea>
+              <textarea
+               rows="4"
+               name="message"
+               value={formData.message}
+               onChange={handleChange}
+               placeholder="Write your message..."
+              ></textarea>
             </div>
             <button type="submit" className="submit-button">Send Message</button>
             <img className="paper" src={require('./letter_send.png')}/>
