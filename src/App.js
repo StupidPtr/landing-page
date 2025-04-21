@@ -32,7 +32,20 @@ export default function ContactPage() {
     const { firstName, lastName, email, phone, subject, message } = formData;
 
     alert(`Message Sent!\n\nName: ${firstName}\nLast Name: ${lastName}\nEmail: ${email}\nPhone: ${phone}\nSubject: ${subject}\nMessage: ${message}`);
-  }
+  };
+
+  const [focusedField, setFocusedField] = useState('');
+
+  const handleFocus = (e) => {
+    setFocusedField(e.target.name);
+  };
+
+  const handleBlur = (e) => {
+    setFocusedField('');
+  };
+
+
+
 
   return (
     <div className="contact-page">
@@ -93,45 +106,81 @@ export default function ContactPage() {
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-row">
               <div className="form-group">
-                <label>First Name</label>
+                <label
+                  style={{
+                    color: focusedField === 'firstName' ? '#8B0000' : undefined
+                  }}
+                >First Name</label>
                 <input
                   type="text"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange} 
                   placeholder="Enter your first name"
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  style={{
+                    borderBottomColor: focusedField ==='firstName' ? '#8B0000' : undefined
+                  }}
                   />
               </div>
               <div className="form-group">
-                <label>Last Name</label>
+                <label
+                  style={{
+                    color: focusedField === 'lastName' ? '#8B0000' : undefined
+                  }}
+                >Last Name</label>
                 <input
                    type="text"
                    name="lastName"
                    value={formData.lastName}
                    onChange={handleChange}
-                   placeholder="Enter your last name" 
+                   placeholder="Enter your last name"
+                   onFocus={handleFocus}
+                   onBlur={handleBlur}
+                   style={{
+                    borderBottomColor: focusedField ==='lastName' ? '#8B0000' : undefined
+                  }} 
                    />
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Email</label>
+                <label
+                  style={{
+                    color: focusedField === 'email' ? '#8B0000' : undefined
+                  }}
+                >Email</label>
                 <input 
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter your email" 
+                  placeholder="Enter your email"
+                  onFocus={handleFocus} 
+                  onBlur={handleBlur}
+                  style={{
+                    borderBottomColor: focusedField ==='email' ? '#8B0000' : undefined
+                  }}
                 />
               </div>
               <div className="form-group">
-                <label>Phone Number</label>
+                <label
+                  style={{
+                    color: focusedField === 'phone' ? '#8B0000' : undefined
+                  }}
+                >Phone Number</label>
                 <input
                   type="text"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="Enter your phone number" 
+                  placeholder="Enter your phone number"
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  style={{
+                    borderBottomColor: focusedField === 'phone' ? '#8B0000' : undefined
+                  }} 
                   />
               </div>
             </div>
