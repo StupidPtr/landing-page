@@ -202,6 +202,11 @@ a {
   width: fit-content;
 }
 
+.required-text {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
 /* ===== Footer ===== */
 .footer {
   background-color: #000;

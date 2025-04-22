@@ -18,6 +18,10 @@ export default function ContactPage() {
       ...formData,
       [name]: value,
     });
+    setRequired({
+      ...required,
+      [name]: false,
+    });
   };
 
   const handleSubjectChange = (e) => {
@@ -30,9 +34,28 @@ export default function ContactPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { firstName, lastName, email, phone, subject, message } = formData;
+    const newRequired = {};
 
+    if(!formData.firstName.trim()) newRequired.firstName = true;
+    if(!formData.lastName.trim()) newRequired.lastName = true;
+    if(!formData.phone.trim()) newRequired.phone = true;
+
+    if(Object.keys(newRequired).length) {
+      setRequired(newRequired);
+      return;
+    }
+
+    setRequired({});
     alert(`Message Sent!\n\nName: ${firstName}\nLast Name: ${lastName}\nEmail: ${email}\nPhone: ${phone}\nSubject: ${subject}\nMessage: ${message}`);
   };
+
+  const fieldStyle = (field) => {
+    if(required[field]) return {color: 'red', borderBottomColor: 'red'};
+
+    if(focusedField === field) return {color: '#000', borderBottomColor: '#000'};
+
+    return{};
+  }
 
   const [focusedField, setFocusedField] = useState('');
 
@@ -44,8 +67,7 @@ export default function ContactPage() {
     setFocusedField('');
   };
 
-
-
+  const [required, setRequired] = useState({});
 
   return (
     <div className="contact-page">
@@ -107,9 +129,7 @@ export default function ContactPage() {
             <div className="form-row">
               <div className="form-group">
                 <label
-                  style={{
-                    color: focusedField === 'firstName' ? '#8B0000' : undefined
-                  }}
+                  style={ fieldStyle('firstName')}
                 >First Name</label>
                 <input
                   type="text"
@@ -120,15 +140,16 @@ export default function ContactPage() {
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                   style={{
-                    borderBottomColor: focusedField ==='firstName' ? '#8B0000' : undefined
+                    borderBottomColor: `${fieldStyle('firstName').borderBottomColor || '#ccc'}`
                   }}
                   />
+                  {required.firstName && (
+                    <div className="required-text">Поле необходимо заполнить</div>
+                  )}
               </div>
               <div className="form-group">
                 <label
-                  style={{
-                    color: focusedField === 'lastName' ? '#8B0000' : undefined
-                  }}
+                  style={ fieldStyle('lastName')}
                 >Last Name</label>
                 <input
                    type="text"
@@ -139,16 +160,19 @@ export default function ContactPage() {
                    onFocus={handleFocus}
                    onBlur={handleBlur}
                    style={{
-                    borderBottomColor: focusedField ==='lastName' ? '#8B0000' : undefined
+                    borderBottomColor: `${fieldStyle('lastName').borderBottomColor || '#ccc'}`
                   }} 
                    />
+                   {required.lastName && (
+                    <div className="required-text">Поле необходимо заполнить</div>
+                   )}
               </div>
             </div>
             <div className="form-row">
               <div className="form-group">
                 <label
                   style={{
-                    color: focusedField === 'email' ? '#8B0000' : undefined
+                    color: focusedField === 'email' ? '#000' : undefined
                   }}
                 >Email</label>
                 <input 
@@ -160,15 +184,13 @@ export default function ContactPage() {
                   onFocus={handleFocus} 
                   onBlur={handleBlur}
                   style={{
-                    borderBottomColor: focusedField ==='email' ? '#8B0000' : undefined
+                    borderBottomColor: focusedField ==='email' ? '#000' : undefined
                   }}
                 />
               </div>
               <div className="form-group">
                 <label
-                  style={{
-                    color: focusedField === 'phone' ? '#8B0000' : undefined
-                  }}
+                  style={ fieldStyle('phone')}
                 >Phone Number</label>
                 <input
                   type="text"
@@ -179,9 +201,12 @@ export default function ContactPage() {
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                   style={{
-                    borderBottomColor: focusedField === 'phone' ? '#8B0000' : undefined
+                    borderBottomColor: `${fieldStyle('phone').borderBottomColor || '#ccc'}`
                   }} 
                   />
+                  {required.phone && (
+                    <div className="required-text">Поле необходимо заполнить</div>
+                  )}
               </div>
             </div>
             <div className="form-radio-group">
