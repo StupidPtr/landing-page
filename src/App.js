@@ -6,8 +6,14 @@ function InputFiled({name, label, type = 'text', value, onChange, onFocus, onBlu
 
   const [focused, setFocused] = useState(false);
 
-  const borderBottomColor = isRequiredError ? 'red' : focused ? '#000' : '#ccc';
-  const labelColor = isRequiredError ? 'red' : focused ? '#000' : '#ccc';
+  const determineColor = () => {
+    if(isRequiredError) return 'red';
+    if(focused) return '#000';
+    return '#ccc';
+  }
+
+  const borderBottomColor = determineColor();
+  const labelColor = determineColor();
 
 
   const handleFocus = (e) => {
