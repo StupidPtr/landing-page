@@ -1,6 +1,49 @@
 import React, {useState} from 'react';
 import './App.css';
 
+
+function InputFiled({name, label, type = 'text', value, onChange, onFocus, onBlur, isRequiredError = false}) {
+
+  const [focused, setFocused] = useState(false);
+
+  const borderBottomColor = isRequiredError ? 'red' : focused ? '#000' : '#ccc';
+  const labelColor = isRequiredError ? 'red' : focused ? '#000' : '#ccc';
+
+
+  const handleFocus = (e) => {
+    setFocused(true);
+    onFocus && onFocus(e);
+  };
+
+  const handleBlur = (e) => {
+    setFocused(false);
+    onBlur && onBlur(e);
+  };
+
+  return (
+    <div className="form-group">
+      <label style={{ color: labelColor}}>{label}</label>
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        placeholder={`Enter your ${label}`}
+        style={{
+          borderBottomColor: borderBottomColor
+        }}
+      />
+      {isRequiredError && (
+        <div className="required-text">Поле необходимо заполнить</div>
+      )}
+    </div>
+  )
+
+}
+
+
 export default function ContactPage() {
 
   const [formData, setFormData] = useState({
@@ -12,16 +55,12 @@ export default function ContactPage() {
     message: '',
   });
 
+  const [required, setRequired] = useState({})
+
   const handleChange = (e) => {
-    const { name, value, type} = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    setRequired({
-      ...required,
-      [name]: false,
-    });
+    const { name, value} = e.target;
+    setFormData({ ...formData, [name]: value});
+    if(required[name]) setRequired({...required, [name]: false});
   };
 
   const handleSubjectChange = (e) => {
@@ -48,26 +87,6 @@ export default function ContactPage() {
     setRequired({});
     alert(`Message Sent!\n\nName: ${firstName}\nLast Name: ${lastName}\nEmail: ${email}\nPhone: ${phone}\nSubject: ${subject}\nMessage: ${message}`);
   };
-
-  const fieldStyle = (field) => {
-    if(required[field]) return {color: 'red', borderBottomColor: 'red'};
-
-    if(focusedField === field) return {color: '#000', borderBottomColor: '#000'};
-
-    return{};
-  }
-
-  const [focusedField, setFocusedField] = useState('');
-
-  const handleFocus = (e) => {
-    setFocusedField(e.target.name);
-  };
-
-  const handleBlur = (e) => {
-    setFocusedField('');
-  };
-
-  const [required, setRequired] = useState({});
 
   return (
     <div className="contact-page">
@@ -127,87 +146,37 @@ export default function ContactPage() {
           {/* Right Form */}
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-row">
-              <div className="form-group">
-                <label
-                  style={ fieldStyle('firstName')}
-                >First Name</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange} 
-                  placeholder="Enter your first name"
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  style={{
-                    borderBottomColor: `${fieldStyle('firstName').borderBottomColor || '#ccc'}`
-                  }}
-                  />
-                  {required.firstName && (
-                    <div className="required-text">Поле необходимо заполнить</div>
-                  )}
-              </div>
-              <div className="form-group">
-                <label
-                  style={ fieldStyle('lastName')}
-                >Last Name</label>
-                <input
-                   type="text"
-                   name="lastName"
-                   value={formData.lastName}
-                   onChange={handleChange}
-                   placeholder="Enter your last name"
-                   onFocus={handleFocus}
-                   onBlur={handleBlur}
-                   style={{
-                    borderBottomColor: `${fieldStyle('lastName').borderBottomColor || '#ccc'}`
-                  }} 
-                   />
-                   {required.lastName && (
-                    <div className="required-text">Поле необходимо заполнить</div>
-                   )}
-              </div>
+              <InputFiled
+                name="firstName"
+                label="First Name"
+                value={formData.firstName}
+                onChange={handleChange}
+                isRequiredError={required.firstName}  
+              />
+              <InputFiled
+                name="lastName"
+                label="Last Name"
+                value={formData.lastName}
+                onChange={handleChange}
+                isRequiredError={required.lastName}  
+              />
             </div>
             <div className="form-row">
-              <div className="form-group">
-                <label
-                  style={{
-                    color: focusedField === 'email' ? '#000' : undefined
-                  }}
-                >Email</label>
-                <input 
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
-                  onFocus={handleFocus} 
-                  onBlur={handleBlur}
-                  style={{
-                    borderBottomColor: focusedField ==='email' ? '#000' : undefined
-                  }}
-                />
-              </div>
-              <div className="form-group">
-                <label
-                  style={ fieldStyle('phone')}
-                >Phone Number</label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  style={{
-                    borderBottomColor: `${fieldStyle('phone').borderBottomColor || '#ccc'}`
-                  }} 
-                  />
-                  {required.phone && (
-                    <div className="required-text">Поле необходимо заполнить</div>
-                  )}
-              </div>
+            <InputFiled
+                name="email"
+                label="Email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                isRequiredError={required.email}  
+              />
+              <InputFiled
+                name="phone"
+                label="Phone"
+                value={formData.phone}
+                onChange={handleChange}
+                isRequiredError={required.phone}  
+              />
             </div>
             <div className="form-radio-group">
               <label className="label-select">Select Subject?</label>
