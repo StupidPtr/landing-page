@@ -1,98 +1,53 @@
 import React, {useState} from 'react';
+import { Formik, Form, useField } from 'formik';
+import * as Yup from 'yup';
 import './App.css';
 
 
-function InputFiled({name, label, type = 'text', value, onChange, onFocus, onBlur, isRequiredError = false}) {
+function InputField({label, ...props}) {
+  const [field, meta] = useField(props)
+  const isError = meta.touched && meta.error;
 
-  const [focused, setFocused] = useState(false);
-
-  const determineColor = () => {
-    if(isRequiredError) return 'red';
+  const determineColor = (focused) => {
+    if(isError) return 'red';
     if(focused) return '#000';
     return '#ccc';
   }
 
-  const borderBottomColor = determineColor();
-  const labelColor = determineColor();
+  const[focused, setFocused] = React.useState(false);
+  const errorColor = determineColor(focused);
 
-
-  const handleFocus = (e) => {
-    setFocused(true);
-    onFocus && onFocus(e);
-  };
-
-  const handleBlur = (e) => {
-    setFocused(false);
-    onBlur && onBlur(e);
-  };
-
+  
   return (
     <div className="form-group">
-      <label style={{ color: labelColor}}>{label}</label>
+      <label style={{ color: errorColor}}>{label}</label>
       <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
+        {...field}
+        {...props}
+        onFocus={() => setFocused(true)}
+        onBlur={(e) =>{
+          setFocused(false);
+          field.onBlur(e);
+        }}
         placeholder={`Enter your ${label}`}
         style={{
-          borderBottomColor: borderBottomColor
+          borderBottomColor: errorColor
         }}
       />
-      {isRequiredError && (
-        <div className="required-text">Поле необходимо заполнить</div>
+      {isError && (
+        <div className="required-text">{meta.error}</div>
       )}
     </div>
-  )
-
+  );
 }
 
+const validationSchema = Yup.object({
+  firstName: Yup.string().required('Поле необходимо заполнить'),
+  lastName: Yup.string().required('Поле необходимо заполнить'),
+  phone: Yup.string().required('Поле необходимо заполнить'),
+});
 
 export default function ContactPage() {
-
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: '',
-  });
-
-  const [required, setRequired] = useState({})
-
-  const handleChange = (e) => {
-    const { name, value} = e.target;
-    setFormData({ ...formData, [name]: value});
-    if(required[name]) setRequired({...required, [name]: false});
-  };
-
-  const handleSubjectChange = (e) => {
-    setFormData({
-      ...formData,
-      subject: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { firstName, lastName, email, phone, subject, message } = formData;
-    const newRequired = {};
-
-    if(!formData.firstName.trim()) newRequired.firstName = true;
-    if(!formData.lastName.trim()) newRequired.lastName = true;
-    if(!formData.phone.trim()) newRequired.phone = true;
-
-    if(Object.keys(newRequired).length) {
-      setRequired(newRequired);
-      return;
-    }
-
-    setRequired({});
-    alert(`Message Sent!\n\nName: ${firstName}\nLast Name: ${lastName}\nEmail: ${email}\nPhone: ${phone}\nSubject: ${subject}\nMessage: ${message}`);
-  };
 
   return (
     <div className="contact-page">
@@ -150,86 +105,91 @@ export default function ContactPage() {
           </div>
 
           {/* Right Form */}
-          <form className="contact-form" onSubmit={handleSubmit}>
-            <div className="form-row">
-              <InputFiled
-                name="firstName"
-                label="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                isRequiredError={required.firstName}  
-              />
-              <InputFiled
-                name="lastName"
-                label="Last Name"
-                value={formData.lastName}
-                onChange={handleChange}
-                isRequiredError={required.lastName}  
-              />
-            </div>
-            <div className="form-row">
-            <InputFiled
-                name="email"
-                label="Email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                isRequiredError={required.email}  
-              />
-              <InputFiled
-                name="phone"
-                label="Phone"
-                value={formData.phone}
-                onChange={handleChange}
-                isRequiredError={required.phone}  
-              />
-            </div>
-            <div className="form-radio-group">
-              <label className="label-select">Select Subject?</label>
-              <div className="radio-options">
-                <label><input
-                  type="radio" 
-                  name="subject" 
-                  value="General Inquiry"
-                  checked={formData.subject === 'General Inquiry'}
-                  onChange={handleSubjectChange}
-                  /> General Inquiry</label>
-                <label><input 
-                  type="radio" 
-                  name="subject"
-                  value="Support"
-                  checked={formData.subject === 'Support'}
-                  onChange={handleSubjectChange}
-                  /> Support</label>
-                <label><input 
-                  type="radio" 
-                  name="subject"
-                  value="Feedback"
-                  checked={formData.subject === 'Feedback'}
-                  onChange={handleSubjectChange}
-                  /> Feedback</label>
-                <label><input 
-                  type="radio" 
-                  name="subject" 
-                  value="Other"
-                  checked={formData.subject === 'Other'}
-                  onChange={handleSubjectChange}
-                  /> Other</label>
+          <Formik
+          initialValues={{
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            subject: '',
+            message: '',
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            alert(`Message Sent!\n\nFirst Name: ${values.firstName}\nLast Name: ${values.lastName}\nEmail: ${values.email}\nPhone: ${values.phone}\nSubject: ${values.subject}\nMessage: ${values.message}`);
+          }}
+          >
+            {({values, handleChange}) =>(
+            <Form className="contact-form">
+              <div className="form-row">
+                <InputField
+                  name="firstName"
+                  label="First Name" 
+                />
+                <InputField
+                  name="lastName"
+                  label="Last Name"
+                />
               </div>
-            </div>
-            <div className="form-group">
-              <label>Message</label>
-              <textarea
-               rows="4"
-               name="message"
-               value={formData.message}
-               onChange={handleChange}
-               placeholder="Write your message..."
-              ></textarea>
-            </div>
-            <button type="submit" className="submit-button">Send Message</button>
-            <img className="paper" src={require('./letter_send.png')}/>
-          </form>
+              <div className="form-row">
+              <InputField
+                  name="email"
+                  label="Email"
+                  type="email"
+                />
+                <InputField
+                  name="phone"
+                  label="Phone"  
+                />
+              </div>
+              <div className="form-radio-group">
+                <label className="label-select">Select Subject?</label>
+                <div className="radio-options">
+                  <label><input
+                    type="radio" 
+                    name="subject" 
+                    value="General Inquiry"
+                    checked={values.subject === 'General Inquiry'}
+                    onChange={handleChange}
+                    /> General Inquiry</label>
+                  <label><input 
+                    type="radio" 
+                    name="subject"
+                    value="Support"
+                    checked={values.subject === 'Support'}
+                    onChange={handleChange}
+                    /> Support</label>
+                  <label><input 
+                    type="radio" 
+                    name="subject"
+                    value="Feedback"
+                    checked={values.subject === 'Feedback'}
+                    onChange={handleChange}
+                    /> Feedback</label>
+                  <label><input 
+                    type="radio" 
+                    name="subject" 
+                    value="Other"
+                    checked={values.subject === 'Other'}
+                    onChange={handleChange}
+                    /> Other</label>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Message</label>
+                <textarea
+                rows="4"
+                name="message"
+                value={values.message}
+                onChange={handleChange}
+                placeholder="Write your message..."
+                ></textarea>
+              </div>
+              <button type="submit" className="submit-button">Send Message</button>
+              <img className="paper" src={require('./letter_send.png')}/>
+            </Form>
+            )}
+          </Formik>
         </div>
       </section>
 
