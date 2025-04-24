@@ -207,6 +207,60 @@ a {
   font-size: 0.8rem;
   margin-top: 4px;
 }
+
+.custom-radio input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.custom-radio {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 8px;
+  user-select: none;
+  margin-right: 20px;
+  position: relative;
+}
+
+.radio-icon {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, background-color 0.2s;
+  background-color: #ccc;
+}
+
+.check-icon {
+  width: 14px;
+  height: 14px;
+  margin: 1px auto;
+  vertical-align: auto;
+}
+
+.radio-label {
+  font-size: 13px;
+  color: #444;
+}
+
+.form-radio-group .label-select {
+  font-size: 10px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.form-radio-group .radio-options {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
 /* ===== Footer ===== */
 .footer {
   background-color: #000;

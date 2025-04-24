@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, createContext, useContext} from 'react';
 import { Formik, Form, useField } from 'formik';
 import * as Yup from 'yup';
 import './App.css';
-
+import checkPng from './Vector.png';
 
 function InputField({label, ...props}) {
   const [field, meta] = useField(props)
@@ -46,6 +46,43 @@ const validationSchema = Yup.object({
   lastName: Yup.string().required('Поле необходимо заполнить'),
   phone: Yup.string().required('Поле необходимо заполнить'),
 });
+
+
+const RadioGroupContext = createContext(null);
+const useRadioGroup = () => {
+  const ctx = useContext(RadioGroupContext);
+  return ctx;
+}
+
+function RadioButtonsContainer({value, onChange, children}) {
+  return (
+    <RadioGroupContext.Provider value={{value, onChange}}>
+      <div role="radiogroup" className="radio-options">
+        {children}
+      </div>
+    </RadioGroupContext.Provider>
+  )
+}
+
+function RadioButton({ name, value, label}) {
+  const {value: groupValue, onChange} = useRadioGroup();
+  const checked = groupValue === value;
+  return (
+    <label className="custom-radio">
+      <input
+        type="radio"
+        name={name}
+        value={value}
+        checked={checked}
+        onChange={() => onChange({ target: {name, value}})}
+      />
+      <span className={`radio-icon ${checked ? 'checked' : ''}`}>
+        {checked && <img src={checkPng} alt="" className='check-icon' />}
+      </span>
+      <span className="radio-label">{label}</span>
+    </label>
+  );
+}
 
 export default function ContactPage() {
 
@@ -144,36 +181,31 @@ export default function ContactPage() {
               </div>
               <div className="form-radio-group">
                 <label className="label-select">Select Subject?</label>
-                <div className="radio-options">
-                  <label><input
-                    type="radio" 
-                    name="subject" 
+                <RadioButtonsContainer
+                  value={values.subject}
+                  onChange={handleChange}
+                >
+                  <RadioButton
+                    name="subject"
                     value="General Inquiry"
-                    checked={values.subject === 'General Inquiry'}
-                    onChange={handleChange}
-                    /> General Inquiry</label>
-                  <label><input 
-                    type="radio" 
+                    label="General Inquiry"
+                  />
+                  <RadioButton
                     name="subject"
                     value="Support"
-                    checked={values.subject === 'Support'}
-                    onChange={handleChange}
-                    /> Support</label>
-                  <label><input 
-                    type="radio" 
+                    label="Support"
+                  />
+                  <RadioButton
                     name="subject"
                     value="Feedback"
-                    checked={values.subject === 'Feedback'}
-                    onChange={handleChange}
-                    /> Feedback</label>
-                  <label><input 
-                    type="radio" 
-                    name="subject" 
+                    label="Feedback"
+                  />
+                  <RadioButton
+                    name="subject"
                     value="Other"
-                    checked={values.subject === 'Other'}
-                    onChange={handleChange}
-                    /> Other</label>
-                </div>
+                    label="Other"
+                  />
+                </RadioButtonsContainer>
               </div>
               <div className="form-group">
                 <label>Message</label>
